@@ -19,15 +19,6 @@ import { useLocation } from "react-router-dom";
 
 const UpdateComponent = () => {
   const location = useLocation();
-
-  useEffect(() => {
-    // Parse the query parameters from the location object
-    const searchParams = new URLSearchParams(location.search);
-    const id = searchParams.get("id");
-    let templateData = getInvoices.filter((item) => item.invoiceID === id);
-    templateData = templateData[0];
-  }, [location.search]);
-
   let getSetting = JSON.parse(localStorage.getItem("setting"));
   let getInvoices = JSON.parse(localStorage.getItem("invoices"));
   const [startDate, setStartDate] = useState(new Date());
@@ -35,23 +26,46 @@ const UpdateComponent = () => {
   const [invoiceID, setInvoiceID] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState("");
-  const [invoiceWriter, setInvoiceWriter] = useState(getSetting?.invoiceWriter);
+  const [invoiceWriter, setInvoiceWriter] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Bank");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [branchName, setBranchName] = useState("");
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [payment, setPayment] = useState(0);
-  const [tax, setTax] = useState(getSetting?.tax || 0);
+  const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(getSetting?.discount || 0);
   const [shipping, setShipping] = useState(getSetting?.shipping || 0);
 
   useEffect(() => {
-    generateRandomNumber();
-  }, []);
+    // Parse the query parameters from the location object
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams.get("id");
+    let filterData = getInvoices.filter((item) => item.invoiceID === id);
+    filterData = filterData[0];
+    // Set update data
+    setStartDate(filterData?.startDate);
+    setDeliveryDate(filterData?.deliveryDate);
+    setInvoiceID(filterData?.invoiceID);
+    setCustomerName(filterData?.customerName);
+    setAddress(filterData?.address);
+    setInvoiceWriter(filterData?.invoiceWriter);
+    setPhone(filterData?.phone);
+    setEmail(filterData?.email);
+    setNote(filterData?.note);
+    setPaymentMethod(filterData?.paymentMethod);
+    setAccountName(filterData?.accountName);
+    setAccountNumber(filterData?.accountNumber);
+    setBranchName(filterData?.branchName);
+    setInvoiceItems(filterData?.invoiceItems);
+    setPayment(filterData?.payment);
+    setTax(filterData?.tax);
+    setDiscount(filterData?.discount);
+    setShipping(filterData?.shipping);
+  }, [location.search]);
 
   const handleAddItem = () => {
     setInvoiceItems([
@@ -89,13 +103,6 @@ const UpdateComponent = () => {
     return total - payment;
   };
 
-  const generateRandomNumber = () => {
-    const currentDate = new Date();
-    const timestamp = currentDate.getTime();
-    const random = Math.floor(Math.random() * 100) + 1;
-    setInvoiceID(`${timestamp}${random}`);
-  };
-
   let selectedTemplate = fixNumber(toNumber(getSetting?.selectedTemplate));
 
   let subTotal = calculateSubtotal();
@@ -127,7 +134,7 @@ const UpdateComponent = () => {
     branchName,
   };
 
-  const saveInvoice = () => {
+  const saveInvoice = (id) => {
     if (IsEmpty(invoiceID)) {
       ErrorToast("Invoice is empty");
     } else if (IsEmpty(customerName)) {
@@ -161,24 +168,9 @@ const UpdateComponent = () => {
         accountNumber,
         branchName,
       };
-
-      localStorage.setItem("invoices", JSON.stringify([...getInvoices, data]));
-      SuccessToast("Success");
-      // After save action
-      generateRandomNumber();
-      setStartDate(new Date());
-      setCustomerName("");
-      setAddress("");
-      setPhone("");
-      setEmail("");
-      setNote("");
-      setAccountName("");
-      setAccountNumber("");
-      setBranchName("");
-      setInvoiceItems([]);
-      setPayment(0);
-
-      // navigate("/all-invoice");
+      const prevValue = getInvoices.filter((item) => item.invoiceID !== id);
+      localStorage.setItem("invoices", JSON.stringify([...prevValue, data]));
+      SuccessToast("Update success!");
     }
   };
 
@@ -223,20 +215,13 @@ const UpdateComponent = () => {
                   <div className="col-span-4">
                     <div className="grid gap-1">
                       <label htmlFor="invoice">Invoice no:</label>
-                      {getSetting?.invoiceType === "random" ? (
-                        <input
-                          value={invoiceID}
-                          type="text"
-                          className="input_box"
-                          disabled
-                        />
-                      ) : (
-                        <input
-                          onChange={(e) => setInvoiceID(e.target.value)}
-                          type="text"
-                          className="input_box"
-                        />
-                      )}
+
+                      <input
+                        defaultValue={invoiceID}
+                        type="text"
+                        className="input_box"
+                        disabled
+                      />
                     </div>
                   </div>
                   <div className="col-span-2">
@@ -245,7 +230,7 @@ const UpdateComponent = () => {
 
                       <span className="input_box">
                         <DatePicker
-                          selected={startDate}
+                          selected={new Date(startDate)}
                           onChange={(date) => setStartDate(date)}
                           className="focus-visible:outline-none w-full block bg-transparent text-gray-800"
                         />
@@ -257,7 +242,7 @@ const UpdateComponent = () => {
                       <label htmlFor="delivery_date">Delivery date:</label>
                       <span className="input_box">
                         <DatePicker
-                          selected={deliveryDate}
+                          selected={new Date(deliveryDate)}
                           onChange={(date) => setDeliveryDate(date)}
                           className="focus-visible:outline-none w-full block bg-transparent text-gray-800"
                         />
@@ -280,7 +265,7 @@ const UpdateComponent = () => {
                     <div className="grid gap-1">
                       <label htmlFor="invoice">Customer name:</label>
                       <input
-                        value={customerName}
+                        defaultValue={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                         type="text"
                         className="input_box"
@@ -291,7 +276,7 @@ const UpdateComponent = () => {
                     <div className="grid gap-1">
                       <label htmlFor="invoice">Customer Address:</label>
                       <input
-                        value={address}
+                        defaultValue={address}
                         onChange={(e) => setAddress(e.target.value)}
                         type="text"
                         className="input_box"
@@ -302,7 +287,7 @@ const UpdateComponent = () => {
                     <div className="grid gap-1">
                       <label htmlFor="invoice">Customer Phone no:</label>
                       <input
-                        value={phone}
+                        defaultValue={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         type="text"
                         className="input_box"
@@ -313,7 +298,7 @@ const UpdateComponent = () => {
                     <div className="grid gap-1">
                       <label htmlFor="invoice">Customer email:</label>
                       <input
-                        value={email}
+                        defaultValue={email}
                         onChange={(e) => setEmail(e.target.value)}
                         type="text"
                         className="input_box"
@@ -346,7 +331,7 @@ const UpdateComponent = () => {
                       <div className="grid gap-1">
                         <label htmlFor="invoice">Account Name:</label>
                         <input
-                          value={accountName}
+                          defaultValue={accountName}
                           onChange={(e) => setAccountName(e.target.value)}
                           type="text"
                           className="input_box"
@@ -359,7 +344,7 @@ const UpdateComponent = () => {
                       <div className="grid gap-1">
                         <label htmlFor="invoice">Account number:</label>
                         <input
-                          value={accountNumber}
+                          defaultValue={accountNumber}
                           onChange={(e) => setAccountNumber(e.target.value)}
                           type="text"
                           className="input_box"
@@ -372,7 +357,7 @@ const UpdateComponent = () => {
                       <div className="grid gap-1">
                         <label htmlFor="invoice">Branch name:</label>
                         <input
-                          value={branchName}
+                          defaultValue={branchName}
                           onChange={(e) => setBranchName(e.target.value)}
                           type="text"
                           className="input_box"
@@ -426,7 +411,7 @@ const UpdateComponent = () => {
                             <div className="p-1"></div>
                             <tbody className="text-sm  ">
                               {invoiceItems.map((item, index) => (
-                                <tr>
+                                <tr key={index}>
                                   <td className="py-2 pr-2">
                                     <input
                                       type="text"
@@ -514,7 +499,7 @@ const UpdateComponent = () => {
                       <div className="grid gap-1">
                         <label htmlFor="invoice">Note:</label>
                         <textarea
-                          value={note}
+                          defaultValue={note}
                           onChange={(e) => setNote(e.target.value)}
                           name=""
                           id=""
@@ -553,7 +538,7 @@ const UpdateComponent = () => {
                         <input
                           className="input_box inline w-[100px] text-right ml-2"
                           type="number"
-                          value={shipping}
+                          defaultValue={shipping}
                           onChange={(e) =>
                             setShipping(fixNumber(toNumber(e.target.value)))
                           }
@@ -568,7 +553,7 @@ const UpdateComponent = () => {
                         <input
                           className="input_box inline w-[100px] text-right ml-2"
                           type="number"
-                          value={discount}
+                          defaultValue={discount}
                           onChange={(e) =>
                             setDiscount(fixNumber(toNumber(e.target.value)))
                           }
@@ -589,7 +574,7 @@ const UpdateComponent = () => {
                         <input
                           className="input_box inline w-[100px] text-right ml-2"
                           type="number"
-                          value={payment}
+                          defaultValue={payment}
                           onChange={(e) =>
                             setPayment(fixNumber(toNumber(e.target.value)))
                           }
@@ -611,10 +596,10 @@ const UpdateComponent = () => {
                 <div>
                   <div className="w-full mt-[30px]">
                     <button
-                      onClick={saveInvoice}
+                      onClick={() => saveInvoice(invoiceID)}
                       className="px-[20px] w-full py-[8px] rounded-md text-[16px] font-medium bg-[#55E6A5] text-gray-900 hover:bg-[#4cd497]  transition-all duration-300"
                     >
-                      Save Invoice
+                      Update Invoice
                     </button>
                   </div>
                   <p className="flex justify-center py-5">or</p>

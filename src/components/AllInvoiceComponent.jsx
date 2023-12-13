@@ -87,7 +87,7 @@ const AllInvoiceComponent = () => {
     {
       name: "Action",
       selector: (row) => (
-        <div className="flex gap-3 w-[300px]">
+        <div className="flex gap-3 ">
           <FaDownload
             className="p-1 cursor-pointer text-[25px]"
             onClick={() => downloadPdf(row.invoiceID)}
