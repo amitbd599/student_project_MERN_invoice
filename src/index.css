@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-300;
+  }
+}
+
+@layer components {
+  .navActive {
+    @apply font-normal text-[18px] text-[#55E6A5] p-2;
+  }
+  .navNotActive {
+    @apply font-normal text-[18px] text-[#ffff] p-2 hover:text-[#55E6A5] transition-all duration-300;
+  }
+  .input_box {
+    @apply p-2 border text-gray-800 border-gray-200 focus:outline-none rounded-md w-full;
+  }
+}
