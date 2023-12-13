@@ -1,9 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 
 import DataTable from "react-data-table-component";
-import { FaTrashCan } from "react-icons/fa6";
+import {
+  FaDownload,
+  FaExpand,
+  FaPenToSquare,
+  FaPrint,
+  FaTrashCan,
+} from "react-icons/fa6";
+import pdfScriptData from "../helper/pdf_script";
+import { Link } from "react-router-dom";
 const AllInvoiceComponent = () => {
-  let getInvoices = JSON.parse(localStorage.getItem("invoices"));
+  let [invoices, setInvoices] = useState(
+    JSON.parse(localStorage.getItem("invoices"))
+  );
+
+  const deleteItem = (idToDelete) => {
+    const updatedData = invoices.filter(
+      (item) => item.invoiceID !== idToDelete
+    );
+    setInvoices(updatedData);
+
+    localStorage.setItem("invoices", JSON.stringify(updatedData));
+  };
+
+  let getSetting = JSON.parse(localStorage.getItem("setting"));
+  const downloadPdf = (idToView) => {
+    let templateData = invoices.filter((item) => item.invoiceID === idToView);
+    templateData = templateData[0];
+    console.log(templateData);
+    pdfScriptData.template({
+      templateData,
+      getSetting,
+      save: true,
+    });
+  };
+
+  let viewPdf = (idToView) => {
+    let templateData = invoices.filter((item) => item.invoiceID === idToView);
+    templateData = templateData[0];
+    pdfScriptData.template({
+      templateData,
+      getSetting,
+      view: true,
+    });
+  };
+
+  let printPdf = (idToView) => {
+    let templateData = invoices.filter((item) => item.invoiceID === idToView);
+    templateData = templateData[0];
+    pdfScriptData.template({
+      templateData,
+      getSetting,
+      print: true,
+    });
+  };
   const columns = [
     {
       name: "Invoice ID",
@@ -12,6 +63,8 @@ const AllInvoiceComponent = () => {
     {
       name: "Customer Name",
       selector: (row) => row.customerName,
+      sortable: true,
+      wrap: true,
     },
 
     {
@@ -30,15 +83,31 @@ const AllInvoiceComponent = () => {
       name: "Payment",
       selector: (row) => row.payment,
     },
-    {
-      name: "Writer",
-      selector: (row) => row.invoiceWriter,
-    },
+
     {
       name: "Action",
       selector: (row) => (
-        <div className="p-2 cursor-pointer	">
-          <FaTrashCan />
+        <div className="flex gap-3 w-[300px]">
+          <FaDownload
+            className="p-1 cursor-pointer text-[25px]"
+            onClick={() => downloadPdf(row.invoiceID)}
+          />
+          <Link to={`/update?id=${row.invoiceID}`}>
+            <FaPenToSquare className="p-1 cursor-pointer text-[25px]" />
+          </Link>
+
+          <FaExpand
+            className="p-1 cursor-pointer text-[25px]"
+            onClick={() => viewPdf(row.invoiceID)}
+          />
+          <FaPrint
+            className="p-1 cursor-pointer text-[25px]"
+            onClick={() => printPdf(row.invoiceID)}
+          />
+          <FaTrashCan
+            className="p-1 cursor-pointer text-[25px]"
+            onClick={() => deleteItem(row.invoiceID)}
+          />
         </div>
       ),
     },
@@ -55,7 +124,7 @@ const AllInvoiceComponent = () => {
             fixedHeader
             fixedHeaderScrollHeight="600px"
             columns={columns}
-            data={getInvoices}
+            data={invoices}
             pagination
           />
         </div>

@@ -171,36 +171,30 @@ const HomeComponent = () => {
     }
   };
 
-  let savePdf = async () => {
-    if (getSetting?.selectedTemplate === 1) {
-      let pdfDataUri = pdfScriptData.template({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    }
+  let downloadPdf = async () => {
+    pdfScriptData.template({
+      templateData,
+      getSetting,
+      save: true,
+    });
 
     saveInvoice();
   };
   let viewPdf = async () => {
-    if (getSetting?.selectedTemplate === 1) {
-      pdfScriptData.template({
-        templateData,
-        getSetting,
-        view: true,
-      });
-    }
+    pdfScriptData.template({
+      templateData,
+      getSetting,
+      view: true,
+    });
   };
+
   let printPdf = async () => {
-    // saveInvoice();
-    if (getSetting?.selectedTemplate === 1) {
-      pdfScriptData.templateOne({
-        templateData,
-        getSetting,
-        print: true,
-      });
-    }
+    pdfScriptData.template({
+      templateData,
+      getSetting,
+      print: true,
+    });
+
     saveInvoice();
   };
 
@@ -620,7 +614,7 @@ const HomeComponent = () => {
                       }}
                     >
                       <button
-                        onClick={savePdf}
+                        onClick={downloadPdf}
                         className="px-[20px] flex justify-center items-center gap-3 py-[8px]   text-purple"
                       >
                         <FaDownload className="text-[20px] hover:text-[#55E6A5] transition-all duration-200" />

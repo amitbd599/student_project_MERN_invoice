@@ -9,12 +9,6 @@ class pdfScript {
       "mm",
       getSetting?.pageSize
     );
-
-    // shape set
-    var pdfWidth = pdf.internal.pageSize.width;
-    // Add the image to the PDF
-    pdf.addImage("/image/shape/shape_2.png", "JPEG", pdfWidth - 200, 0, 200, 0);
-
     pdf.setFont("inter", "normal");
     // Bg image
     let imgWidth = 100; // Set the width of your image
@@ -43,19 +37,15 @@ class pdfScript {
 
     pdf.setFontSize(40);
     pdf.setFont("inter", "bold");
-    pdf.setTextColor(
-      getSetting?.themeColor?.r,
-      getSetting?.themeColor?.g,
-      getSetting?.themeColor?.b
-    );
+    pdf.setTextColor(0, 0, 0);
 
     pdf.setTextColor(0, 0, 0);
     pdf.setFont("inter", "normal");
-    pdf.setFontSize(8);
+    pdf.setFontSize(10);
     pdf.text(
       `INVOICE # ${templateData?.invoiceID}`,
       pdf.internal.pageSize.width - 15,
-      10,
+      15,
       {
         align: "right",
       }
@@ -63,23 +53,23 @@ class pdfScript {
     pdf.text(
       `Payment status: ${templateData?.due > 0 ? "Due" : "Paid"}`,
       pdf.internal.pageSize.width - 15,
-      14,
+      21,
       {
         align: "right",
       }
     );
     pdf.text(
-      `Submit Date  ${templateData?.startDate.toISOString().slice(0, 10)}`,
+      `Submit Date  ${templateData?.startDate?.slice(0, 10)}`,
       pdf.internal.pageSize.width - 15,
-      18,
+      27,
       {
         align: "right",
       }
     );
     pdf.text(
-      `Delivery date  ${templateData?.deliveryDate.toISOString().slice(0, 10)}`,
+      `Delivery date  ${templateData?.deliveryDate?.slice(0, 10)}`,
       pdf.internal.pageSize.width - 15,
-      22,
+      33,
       {
         align: "right",
       }
@@ -91,18 +81,14 @@ class pdfScript {
     pdf.text(
       `${getSetting?.email}, ${getSetting?.mobile}, ${getSetting?.website}`,
       15,
-      38
+      39
     );
 
     // Right side data
     let templateTwoRightStart = parseInt(pdf.internal.pageSize.width) / 2;
     // Filled red square
     pdf.setDrawColor(0);
-    pdf.setFillColor(
-      getSetting?.themeColor?.r,
-      getSetting?.themeColor?.g,
-      getSetting?.themeColor?.b
-    );
+    pdf.setFillColor(0, 0, 0);
     pdf.rect(15, 52, templateTwoRightStart - 30, 8, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFontSize(12);
@@ -120,11 +106,7 @@ class pdfScript {
 
     // Filled red square
     pdf.setDrawColor(0);
-    pdf.setFillColor(
-      getSetting?.themeColor?.r,
-      getSetting?.themeColor?.g,
-      getSetting?.themeColor?.b
-    );
+    pdf.setFillColor(0, 0, 0);
     pdf.rect(
       templateTwoRightStart + 15,
       52,
@@ -172,13 +154,10 @@ class pdfScript {
     // Table Item
     autoTable(pdf, {
       startY: 90,
+      theme: "grid",
       headStyles: {
         halign: "left",
-        fillColor: [
-          getSetting?.themeColor?.r,
-          getSetting?.themeColor?.g,
-          getSetting?.themeColor?.b,
-        ],
+        fillColor: [0, 0, 0],
       },
       columnStyles: { halign: "left" },
       body: templateData?.invoiceItems,
@@ -192,10 +171,8 @@ class pdfScript {
     // Table payment calculation
 
     let data = [
-      ["Description", "Value"],
       ["Subtotal", templateData?.subTotal],
       ["Tax(15%)", templateData?.tax],
-      ["Vat", templateData?.vat],
       ["Shipping", templateData?.shipping],
       ["Discount", templateData?.discount],
       ["Total", templateData?.total],
@@ -206,10 +183,8 @@ class pdfScript {
     // Filter out elements where the second element is 0
     var filteredData = data.filter(function (item) {
       return (
-        (item[1] !== 0 && item[0] === "Description") ||
         (item[1] !== null && item[0] === "Subtotal") ||
         (item[1] !== 0 && item[0] === "Tax(15%)") ||
-        (item[1] !== 0 && item[0] === "Vat") ||
         (item[1] !== null && item[0] === "Shipping") ||
         (item[1] !== null && item[0] === "Discount") ||
         (item[1] !== null && item[0] === "Total") ||
@@ -222,22 +197,19 @@ class pdfScript {
       fontStyle: "bold",
       fontSize: 10,
       textColor: 0,
-      halign: "center",
+      halign: "right",
     };
 
     pdf.autoTable({
       tableWidth: 60,
+      theme: "grid",
       margin: { left: pdf.internal.pageSize.width - 74, bottom: 40 },
-      head: [filteredData[0]],
-      body: filteredData.slice(1),
+      // head: [filteredData[0]],
+      body: filteredData.slice(0),
       styles: styles,
       headStyles: {
         europe: { halign: "right" },
-        fillColor: [
-          getSetting?.themeColor?.r,
-          getSetting?.themeColor?.g,
-          getSetting?.themeColor?.b,
-        ],
+        fillColor: [0, 0, 0],
         textColor: [255, 255, 255],
       },
       columnStyles: {
@@ -259,11 +231,7 @@ class pdfScript {
     );
     pdf.setFontSize(10);
     pdf.setDrawColor(0);
-    pdf.setFillColor(
-      getSetting?.themeColor?.r,
-      getSetting?.themeColor?.g,
-      getSetting?.themeColor?.b
-    );
+    pdf.setFillColor(0, 0, 0);
     pdf.rect(-10, pdf.internal.pageSize.height - 15, 400, 1, "F");
     let splitTitle = pdf.splitTextToSize(
       getSetting?.footerText,

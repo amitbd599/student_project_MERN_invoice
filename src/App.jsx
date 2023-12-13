@@ -5,6 +5,7 @@ import Setting from "./page/Setting";
 import AllInvoice from "./page/AllInvoice";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import Update from "./page/Update";
 
 function App() {
   useEffect(() => {
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/all-invoice" element={<AllInvoice />} />
           <Route exact path="/setting" element={<Setting />} />
+          <Route exact path="/update" element={<Update />} />
         </Routes>
       </BrowserRouter>
     </>
