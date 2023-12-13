@@ -1,5 +1,11 @@
 export const currencyData = [
   {
+    currency: "USD",
+    symbol: "$",
+    name: "US Dollar",
+    country: "United States of America",
+  },
+  {
     currency: "AED",
     symbol: "د.إ",
     name: "UAE Dirham",

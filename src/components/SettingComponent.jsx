@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Select, Option } from "@material-tailwind/react";
 import { currencyData } from "../script/currency.js";
 import { page_size } from "../script/page_size";
@@ -8,11 +8,13 @@ const SettingComponent = () => {
   let getSetting = JSON.parse(localStorage.getItem("setting"));
   const [logo, setLogo] = useState(getSetting?.logo);
   const [bgImg, setBgImg] = useState(getSetting?.bgImg);
-  const [currency, setCurrency] = useState(getSetting?.currency);
-  const [invoiceType, setInvoiceType] = useState(getSetting?.invoiceType);
-  const [pageSize, setPageSize] = useState(getSetting?.pageSize);
+  const [currency, setCurrency] = useState(getSetting?.currency || "$");
+  const [invoiceType, setInvoiceType] = useState(
+    getSetting?.invoiceType || "random"
+  );
+  const [pageSize, setPageSize] = useState(getSetting?.pageSize || "a4");
   const [pageOrientation, setPageOrientation] = useState(
-    getSetting?.pageOrientation
+    getSetting?.pageOrientation || "p"
   );
 
   const logoHandel = (event) => {
@@ -91,6 +93,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.company_name}
                     ref={(input) => (company_nameRef = input)}
                   />
                 </div>
@@ -101,6 +104,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.company_address}
                     ref={(input) => (company_addressRef = input)}
                   />
                 </div>
@@ -111,6 +115,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.mobile}
                     ref={(input) => (mobileRef = input)}
                   />
                 </div>
@@ -121,6 +126,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.phone}
                     ref={(input) => (phoneRef = input)}
                   />
                 </div>
@@ -131,6 +137,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.fax}
                     ref={(input) => (faxRef = input)}
                   />
                 </div>
@@ -141,6 +148,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.email}
                     ref={(input) => (emailRef = input)}
                   />
                 </div>
@@ -151,6 +159,7 @@ const SettingComponent = () => {
                   <input
                     type="text"
                     className="input_box"
+                    defaultValue={getSetting?.website}
                     ref={(input) => (websiteRef = input)}
                   />
                 </div>
@@ -187,6 +196,7 @@ const SettingComponent = () => {
                     type="number"
                     className="input_box"
                     placeholder="0"
+                    defaultValue={getSetting?.tax}
                     ref={(input) => (taxRef = input)}
                   />
                 </div>
@@ -200,6 +210,7 @@ const SettingComponent = () => {
                       type="number"
                       className="input_box"
                       placeholder="0"
+                      defaultValue={getSetting?.discount}
                       ref={(input) => (discountRef = input)}
                     />
                   </span>
@@ -213,6 +224,7 @@ const SettingComponent = () => {
                       type="number"
                       className="input_box"
                       placeholder="0"
+                      defaultValue={getSetting?.shipping}
                       ref={(input) => (shippingRef = input)}
                     />
                   </span>
@@ -255,8 +267,8 @@ const SettingComponent = () => {
                         unmount: { y: 25 },
                       }}
                     >
-                      <Option value="l">Landscape</Option>
                       <Option value="p">Portrait</Option>
+                      <Option value="l">Landscape</Option>
                     </Select>
                   </div>
                 </div>
@@ -292,6 +304,7 @@ const SettingComponent = () => {
                     <input
                       type="text"
                       className="input_box"
+                      defaultValue={getSetting?.invoiceWriter}
                       ref={(input) => (invoiceWriterRef = input)}
                     />
                   </div>
@@ -303,6 +316,7 @@ const SettingComponent = () => {
                   <div>
                     <textarea
                       ref={(input) => (footerTextRef = input)}
+                      defaultValue={getSetting?.footerText}
                       className="input_box"
                       name=""
                       id=""
