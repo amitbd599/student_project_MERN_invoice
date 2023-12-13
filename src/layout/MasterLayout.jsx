@@ -54,7 +54,7 @@ const MasterLayout = (props) => {
         <main>{props.children}</main>
 
         {/* Footer */}
-        <footer className="bg-[#141C27] pt-[80px] pb-[20px]">
+        <footer className="bg-[#141C27] pt-[80px] pb-[20px] text-gray-100">
           <div className="container mx-auto">
             <div className="grid grid-cols-12 gap-[40px] border-b border-gray-800 pb-[40px]">
               <div className="col-span-4">

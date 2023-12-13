@@ -84,7 +84,7 @@ const SettingComponent = () => {
     <section className="container mx-auto">
       <div className="py-[80px]">
         <div className="grid grid-cols-12 gap-[20px]">
-          <div className="col-span-9 p-[20px] bg-[#141C27] rounded-md">
+          <div className="col-span-9 p-[20px] bg-white shadow-lg rounded-md">
             <h2 className="font-semibold mb-3">Setting your company info:</h2>
             <div className="grid grid-cols-12 gap-[20px]">
               <div className="w-full col-span-4">
@@ -171,7 +171,7 @@ const SettingComponent = () => {
                     <Select
                       onChange={(event) => setCurrency(event)}
                       color="light-blue"
-                      className="text-gray-300"
+                      className="text-gray-800"
                       value={currency}
                       defaultValue={currency}
                       label="Select item"
@@ -239,7 +239,7 @@ const SettingComponent = () => {
                       onChange={(event) => setInvoiceType(event)}
                       value={invoiceType}
                       color="light-blue"
-                      className="text-gray-300"
+                      className="text-gray-800"
                       animate={{
                         mount: { y: 0 },
                         unmount: { y: 25 },
@@ -261,7 +261,7 @@ const SettingComponent = () => {
                       value={pageOrientation}
                       label="Select item"
                       color="light-blue"
-                      className="text-gray-300"
+                      className="text-gray-800"
                       animate={{
                         mount: { y: 0 },
                         unmount: { y: 25 },
@@ -282,7 +282,7 @@ const SettingComponent = () => {
                       value={pageSize}
                       label="Select item"
                       color="light-blue"
-                      className="text-gray-300"
+                      className="text-gray-800"
                       animate={{
                         mount: { y: 0 },
                         unmount: { y: 25 },
@@ -329,7 +329,7 @@ const SettingComponent = () => {
             </div>
           </div>
           <div className="col-span-3  ">
-            <div className="p-[20px] bg-[#141C27] rounded-md">
+            <div className="p-[20px] bg-white shadow-lg rounded-md">
               <div className="flex gap-[30px]">
                 <div className="w-[300px] relative">
                   <h2 className="font-semibold pb-2">
@@ -337,7 +337,7 @@ const SettingComponent = () => {
                   </h2>
                   <label
                     htmlFor="logo"
-                    className=" cursor-pointer flex w-full  max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-blue-400 bg-[#141C27] p-6 text-center "
+                    className=" cursor-pointer flex w-full  max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-blue-400 bg-white p-6 text-center "
                   >
                     <div>
                       {logo ? (
@@ -365,10 +365,10 @@ const SettingComponent = () => {
                         </svg>
                       )}
                     </div>
-                    <h2 className="mt-4 text-xl font-medium text-gray-300 tracking-wide">
+                    <h2 className="mt-4 text-xl font-medium text-gray-800 tracking-wide">
                       Change logo
                     </h2>
-                    <p className="mt-2 text-gray-300 tracking-wide">
+                    <p className="mt-2 text-gray-800 tracking-wide">
                       Upload file PNG, JPG.
                     </p>
                     <input
@@ -393,7 +393,7 @@ const SettingComponent = () => {
                   <h2 className="font-semibold pb-2">Add background image</h2>
                   <label
                     htmlFor="bg"
-                    className=" cursor-pointer flex w-full  max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-blue-400 bg-[#141C27] p-6 text-center"
+                    className=" cursor-pointer flex w-full  max-w-lg flex-col items-center rounded-xl border-2 border-dashed border-blue-400 bg-white p-6 text-center"
                   >
                     <div>
                       {bgImg ? (
@@ -421,10 +421,10 @@ const SettingComponent = () => {
                         </svg>
                       )}
                     </div>
-                    <h2 className="mt-4 text-xl font-medium text-gray-300 tracking-wide">
+                    <h2 className="mt-4 text-xl font-medium text-gray-800 tracking-wide">
                       Change image
                     </h2>
-                    <p className="mt-2 text-gray-300 tracking-wide">
+                    <p className="mt-2 text-gray-800 tracking-wide">
                       Upload file PNG, JPG.
                     </p>
                     <input
@@ -446,7 +446,7 @@ const SettingComponent = () => {
               </div>
               <div className="mt-5">
                 <button
-                  className="px-[20px] font-medium text-[18px] py-[8px] w-full rounded-md bg-[#55E6A5] text-gray-900"
+                  className="px-[20px] font-medium text-[18px] py-[8px] w-full rounded-md bg-[#55E6A5] hover:bg-[#4cd497] text-gray-900 transition-all duration-300"
                   onClick={saveData}
                 >
                   Save global setting

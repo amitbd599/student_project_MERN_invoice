@@ -1,6 +1,9 @@
 import toast from "react-hot-toast";
 
 class FormHelper {
+  IsEmpty(value) {
+    return value.length === 0;
+  }
   ErrorToast(msg) {
     toast.error(msg);
   }
@@ -27,5 +30,11 @@ class FormHelper {
     });
   }
 }
-export const { ErrorToast, SuccessToast, getBase64, toNumber, fixNumber } =
-  new FormHelper();
+export const {
+  IsEmpty,
+  ErrorToast,
+  SuccessToast,
+  getBase64,
+  toNumber,
+  fixNumber,
+} = new FormHelper();

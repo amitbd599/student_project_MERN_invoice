@@ -8,18 +8,15 @@ import {
 import DatePicker from "react-datepicker";
 import {
   ErrorToast,
+  IsEmpty,
   SuccessToast,
   fixNumber,
   toNumber,
 } from "../helper/helper";
-import { useNavigate } from "react-router-dom";
 import { Option, Select, Tooltip } from "@material-tailwind/react";
 import pdfScriptData from "../helper/pdf_script.js";
 
-// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
 const HomeComponent = () => {
-  const navigate = useNavigate();
   let getSetting = JSON.parse(localStorage.getItem("setting"));
   let getInvoices = JSON.parse(localStorage.getItem("invoices"));
   const [startDate, setStartDate] = useState(new Date());
@@ -37,11 +34,9 @@ const HomeComponent = () => {
   const [branchName, setBranchName] = useState("");
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [payment, setPayment] = useState(0);
-  const [discount, setDiscount] = useState(getSetting?.discount);
-  const [shipping, setShipping] = useState(getSetting?.shipping);
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pdfDataUri, setPdfDataUri] = useState(null);
+  const [tax, setTax] = useState(getSetting?.tax || 0);
+  const [discount, setDiscount] = useState(getSetting?.discount || 0);
+  const [shipping, setShipping] = useState(getSetting?.shipping || 0);
 
   useEffect(() => {
     generateRandomNumber();
@@ -75,8 +70,8 @@ const HomeComponent = () => {
 
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    let taxCal = parseInt((subtotal * getSetting?.tax) / 100);
-    return subtotal + taxCal + getSetting?.vat + shipping - discount;
+    let taxCal = parseInt((subtotal * tax) / 100);
+    return subtotal + taxCal + shipping - discount;
   };
   const calculateDue = () => {
     const total = calculateTotal();
@@ -90,11 +85,9 @@ const HomeComponent = () => {
     setInvoiceID(`${timestamp}${random}`);
   };
 
-  let vat = fixNumber(toNumber(getSetting?.vat));
   let selectedTemplate = fixNumber(toNumber(getSetting?.selectedTemplate));
 
   let subTotal = calculateSubtotal();
-  let tax = parseInt((subTotal * getSetting?.tax) / 100);
   let total = calculateTotal();
   let due = calculateDue();
 
@@ -116,7 +109,6 @@ const HomeComponent = () => {
     deliveryDate,
     note,
     tax,
-    vat,
     selectedTemplate,
     paymentMethod,
     accountName,
@@ -152,7 +144,6 @@ const HomeComponent = () => {
         deliveryDate,
         note,
         tax,
-        vat,
         selectedTemplate,
         paymentMethod,
         accountName,
@@ -182,77 +173,23 @@ const HomeComponent = () => {
 
   let savePdf = async () => {
     if (getSetting?.selectedTemplate === 1) {
-      let pdfDataUri = pdfScriptData.templateOne({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 2) {
-      let pdfDataUri = pdfScriptData.templateTwo({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 3) {
-      let pdfDataUri = pdfScriptData.templateThree({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 4) {
-      let pdfDataUri = pdfScriptData.templateFour({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 5) {
-      let pdfDataUri = pdfScriptData.templateFive({
+      let pdfDataUri = pdfScriptData.template({
         templateData,
         getSetting,
         save: true,
       });
       setPdfDataUri(pdfDataUri);
     }
+
     saveInvoice();
   };
   let viewPdf = async () => {
     if (getSetting?.selectedTemplate === 1) {
-      pdfScriptData.templateOne({
+      pdfScriptData.template({
         templateData,
         getSetting,
         view: true,
       });
-    } else if (getSetting?.selectedTemplate === 2) {
-      pdfScriptData.templateTwo({
-        templateData,
-        getSetting,
-        view: true,
-      });
-    } else if (getSetting?.selectedTemplate === 3) {
-      let pdfDataUri = pdfScriptData.templateThree({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 4) {
-      let pdfDataUri = pdfScriptData.templateFour({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 5) {
-      let pdfDataUri = pdfScriptData.templateFive({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
     }
   };
   let printPdf = async () => {
@@ -263,40 +200,8 @@ const HomeComponent = () => {
         getSetting,
         print: true,
       });
-    } else if (getSetting?.selectedTemplate === 2) {
-      pdfScriptData.templateTwo({
-        templateData,
-        getSetting,
-        print: true,
-      });
-    } else if (getSetting?.selectedTemplate === 3) {
-      let pdfDataUri = pdfScriptData.templateThree({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 4) {
-      let pdfDataUri = pdfScriptData.templateFour({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
-    } else if (getSetting?.selectedTemplate === 5) {
-      let pdfDataUri = pdfScriptData.templateFive({
-        templateData,
-        getSetting,
-        save: true,
-      });
-      setPdfDataUri(pdfDataUri);
     }
     saveInvoice();
-  };
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
   };
 
   return (
@@ -334,7 +239,7 @@ const HomeComponent = () => {
                         <DatePicker
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
-                          className="focus-visible:outline-none w-full block bg-transparent text-gray-300"
+                          className="focus-visible:outline-none w-full block bg-transparent text-gray-800"
                         />
                       </span>
                     </div>
@@ -346,7 +251,7 @@ const HomeComponent = () => {
                         <DatePicker
                           selected={deliveryDate}
                           onChange={(date) => setDeliveryDate(date)}
-                          className="focus-visible:outline-none w-full block bg-transparent text-gray-300"
+                          className="focus-visible:outline-none w-full block bg-transparent text-gray-800"
                         />
                       </span>
                     </div>
@@ -584,7 +489,7 @@ const HomeComponent = () => {
                         </div>
                         <div className="mt-2">
                           <button
-                            className="px-[20px] py-[8px] rounded-md bg-[#55E6A5] text-gray-900 "
+                            className="px-[20px] py-[8px] rounded-md bg-[#55E6A5] text-gray-900  hover:bg-[#4cd497]  transition-all duration-300"
                             onClick={handleAddItem}
                           >
                             Add item
@@ -629,11 +534,6 @@ const HomeComponent = () => {
                     {getSetting?.tax !== 0 && (
                       <p className="flex justify-between">
                         Tax: <span className="pl-3">+ {getSetting?.tax}%</span>
-                      </p>
-                    )}
-                    {getSetting?.vat !== 0 && (
-                      <p className="flex justify-between">
-                        Vat: <span className="pl-3">+ {getSetting?.vat}</span>
                       </p>
                     )}
 
@@ -704,7 +604,7 @@ const HomeComponent = () => {
                   <div className="w-full mt-[30px]">
                     <button
                       onClick={saveInvoice}
-                      className="px-[20px] w-full py-[8px] rounded-md text-[16px] font-medium bg-[#55E6A5] text-gray-900"
+                      className="px-[20px] w-full py-[8px] rounded-md text-[16px] font-medium bg-[#55E6A5] text-gray-900 hover:bg-[#4cd497]  transition-all duration-300"
                     >
                       Save Invoice
                     </button>
