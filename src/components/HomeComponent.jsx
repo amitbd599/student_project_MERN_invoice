@@ -34,7 +34,6 @@ const HomeComponent = () => {
   const [branchName, setBranchName] = useState("");
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [payment, setPayment] = useState(0);
-  const [tax, setTax] = useState(getSetting?.tax || 0);
   const [discount, setDiscount] = useState(getSetting?.discount || 0);
   const [shipping, setShipping] = useState(getSetting?.shipping || 0);
 
@@ -70,7 +69,7 @@ const HomeComponent = () => {
 
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    let taxCal = parseInt((subtotal * tax) / 100);
+    let taxCal = parseInt((subtotal * getSetting?.tax) / 100);
     return subtotal + taxCal + shipping - discount;
   };
   const calculateDue = () => {
@@ -82,7 +81,8 @@ const HomeComponent = () => {
     const currentDate = new Date();
     const timestamp = currentDate.getTime();
     const random = Math.floor(Math.random() * 100) + 1;
-    setInvoiceID(`${timestamp}${random}`);
+    getSetting?.invoiceType === "random" &&
+      setInvoiceID(`${timestamp}${random}`);
   };
 
   let selectedTemplate = fixNumber(toNumber(getSetting?.selectedTemplate));
@@ -90,6 +90,7 @@ const HomeComponent = () => {
   let subTotal = calculateSubtotal();
   let total = calculateTotal();
   let due = calculateDue();
+  let tax = parseInt((subTotal * getSetting?.tax) / 100);
 
   let templateData = {
     invoiceID,
@@ -105,8 +106,8 @@ const HomeComponent = () => {
     payment,
     discount,
     shipping,
-    startDate,
-    deliveryDate,
+    startDate: startDate.toISOString(),
+    deliveryDate: deliveryDate.toISOString(),
     note,
     tax,
     selectedTemplate,
@@ -116,41 +117,37 @@ const HomeComponent = () => {
     branchName,
   };
 
-  const saveInvoice = () => {
-    if (IsEmpty(invoiceID)) {
-      ErrorToast("Invoice is empty");
-    } else if (IsEmpty(customerName)) {
-      ErrorToast("Customer Name is empty");
-    } else if (IsEmpty(address)) {
-      ErrorToast("Address is empty");
-    } else if (IsEmpty(invoiceWriter)) {
-      ErrorToast("Invoice Writer is empty");
-    } else {
-      let data = {
-        invoiceID,
-        customerName,
-        phone,
-        email,
-        address,
-        invoiceWriter,
-        invoiceItems,
-        subTotal,
-        total,
-        due,
-        payment,
-        discount,
-        shipping,
-        startDate,
-        deliveryDate,
-        note,
-        tax,
-        selectedTemplate,
-        paymentMethod,
-        accountName,
-        accountNumber,
-        branchName,
-      };
+  let isDuplicateObject = (id, array) => {
+    return array.some((obj) => obj.invoiceID === id);
+  };
 
+  const saveInvoice = () => {
+    let data = {
+      invoiceID,
+      customerName,
+      phone,
+      email,
+      address,
+      invoiceWriter,
+      invoiceItems,
+      subTotal,
+      total,
+      due,
+      payment,
+      discount,
+      shipping,
+      startDate,
+      deliveryDate,
+      note,
+      tax,
+      selectedTemplate,
+      paymentMethod,
+      accountName,
+      accountNumber,
+      branchName,
+    };
+
+    if (!isDuplicateObject(invoiceID, getInvoices)) {
       localStorage.setItem("invoices", JSON.stringify([...getInvoices, data]));
       SuccessToast("Success");
       // After save action
@@ -166,8 +163,8 @@ const HomeComponent = () => {
       setBranchName("");
       setInvoiceItems([]);
       setPayment(0);
-
-      // navigate("/all-invoice");
+    } else {
+      ErrorToast("Invoice ID already exited!");
     }
   };
 
@@ -231,7 +228,7 @@ const HomeComponent = () => {
 
                       <span className="input_box">
                         <DatePicker
-                          selected={startDate}
+                          selected={new Date(startDate)}
                           onChange={(date) => setStartDate(date)}
                           className="focus-visible:outline-none w-full block bg-transparent text-gray-800"
                         />

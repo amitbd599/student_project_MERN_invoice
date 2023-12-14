@@ -37,8 +37,8 @@ const UpdateComponent = () => {
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [payment, setPayment] = useState(0);
   const [tax, setTax] = useState(0);
-  const [discount, setDiscount] = useState(getSetting?.discount || 0);
-  const [shipping, setShipping] = useState(getSetting?.shipping || 0);
+  const [discount, setDiscount] = useState(0);
+  const [shipping, setShipping] = useState(0);
 
   useEffect(() => {
     // Parse the query parameters from the location object
@@ -135,43 +135,34 @@ const UpdateComponent = () => {
   };
 
   const saveInvoice = (id) => {
-    if (IsEmpty(invoiceID)) {
-      ErrorToast("Invoice is empty");
-    } else if (IsEmpty(customerName)) {
-      ErrorToast("Customer Name is empty");
-    } else if (IsEmpty(address)) {
-      ErrorToast("Address is empty");
-    } else if (IsEmpty(invoiceWriter)) {
-      ErrorToast("Invoice Writer is empty");
-    } else {
-      let data = {
-        invoiceID,
-        customerName,
-        phone,
-        email,
-        address,
-        invoiceWriter,
-        invoiceItems,
-        subTotal,
-        total,
-        due,
-        payment,
-        discount,
-        shipping,
-        startDate,
-        deliveryDate,
-        note,
-        tax,
-        selectedTemplate,
-        paymentMethod,
-        accountName,
-        accountNumber,
-        branchName,
-      };
-      const prevValue = getInvoices.filter((item) => item.invoiceID !== id);
-      localStorage.setItem("invoices", JSON.stringify([...prevValue, data]));
-      SuccessToast("Update success!");
-    }
+    let data = {
+      invoiceID,
+      customerName,
+      phone,
+      email,
+      address,
+      invoiceWriter,
+      invoiceItems,
+      subTotal,
+      total,
+      due,
+      payment,
+      discount,
+      shipping,
+      startDate,
+      deliveryDate,
+      note,
+      tax,
+      selectedTemplate,
+      paymentMethod,
+      accountName,
+      accountNumber,
+      branchName,
+    };
+
+    const prevValue = getInvoices.filter((item) => item.invoiceID !== id);
+    localStorage.setItem("invoices", JSON.stringify([...prevValue, data]));
+    SuccessToast("Update success!");
   };
 
   let downloadPdf = async () => {

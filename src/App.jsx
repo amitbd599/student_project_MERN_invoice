@@ -4,22 +4,14 @@ import Home from "./page/Home";
 import Setting from "./page/Setting";
 import AllInvoice from "./page/AllInvoice";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
 import Update from "./page/Update";
+import InitLoadData from "./helper/InitLoadData";
 
 function App() {
-  useEffect(() => {
-    let getSetting = JSON.parse(localStorage.getItem("setting"));
-    let getInvoices = JSON.parse(localStorage.getItem("invoices"));
-    if (getSetting === null && getInvoices === null) {
-      localStorage.setItem("setting", JSON.stringify([]));
-      localStorage.setItem("invoices", JSON.stringify([]));
-    }
-  }, []);
-
   return (
     <>
       <BrowserRouter>
+        <InitLoadData />
         <Toaster position="bottom-center" reverseOrder={false} />
         <Routes>
           <Route exact path="/" element={<Home />} />

@@ -12,7 +12,7 @@ import pdfScriptData from "../helper/pdf_script";
 import { Link } from "react-router-dom";
 const AllInvoiceComponent = () => {
   let [invoices, setInvoices] = useState(
-    JSON.parse(localStorage.getItem("invoices"))
+    JSON.parse(localStorage.getItem("invoices") || [])
   );
 
   const deleteItem = (idToDelete) => {
@@ -28,7 +28,6 @@ const AllInvoiceComponent = () => {
   const downloadPdf = (idToView) => {
     let templateData = invoices.filter((item) => item.invoiceID === idToView);
     templateData = templateData[0];
-    console.log(templateData);
     pdfScriptData.template({
       templateData,
       getSetting,
@@ -59,35 +58,50 @@ const AllInvoiceComponent = () => {
     {
       name: "Invoice ID",
       selector: (row) => row.invoiceID,
+      width: "150px",
     },
     {
       name: "Customer Name",
       selector: (row) => row.customerName,
       sortable: true,
       wrap: true,
+      width: "200px",
     },
 
     {
       name: "Date",
-      selector: (row) => row.startDate,
+      sortable: true,
+      selector: (row) => row.startDate.slice(0, 10),
+      width: "100px",
+    },
+    {
+      name: "Delivery Date",
+      sortable: true,
+      selector: (row) => row.deliveryDate.slice(0, 10),
+      width: "120px",
     },
     {
       name: "Payment Method",
       selector: (row) => row.paymentMethod,
+      width: "140px",
+    },
+    {
+      name: "Payment Paid",
+      selector: (row) => row.payment,
+      width: "120px",
     },
     {
       name: "Due",
       selector: (row) => row.due,
-    },
-    {
-      name: "Payment",
-      selector: (row) => row.payment,
+      width: "100px",
     },
 
     {
       name: "Action",
+      with: "500px",
+
       selector: (row) => (
-        <div className="flex gap-3 ">
+        <div className="flex gap-4 ">
           <FaDownload
             className="p-1 cursor-pointer text-[25px]"
             onClick={() => downloadPdf(row.invoiceID)}
@@ -116,9 +130,9 @@ const AllInvoiceComponent = () => {
   return (
     <section className="container mx-auto py-[80px]">
       <div className="bg-white shadow-lg p-[20px] rounded-lg">
-        <div className="rounded-xl bg-white p-[30px] m-[30px]">
+        <div className="rounded-xl bg-white m-[30px]">
           <h2 className="text-slate-700 text-2xl font-semibold mb-2">
-            All Message
+            All Invoice file
           </h2>
           <DataTable
             fixedHeader

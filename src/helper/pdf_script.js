@@ -4,6 +4,7 @@ import autoTable from "jspdf-autotable";
 class pdfScript {
   //Template
   template({ getSetting, templateData, print, view, save }) {
+    console.log(templateData);
     const pdf = new jsPDF(
       getSetting?.pageOrientation,
       "mm",
@@ -16,11 +17,12 @@ class pdfScript {
     let centerImgX = (pdf.internal.pageSize.width - imgWidth) / 2;
     let centerImgY = (pdf.internal.pageSize.height - imgHeight) / 2;
 
+    console.log(!!getSetting?.bgImg?.length);
     // Background image set
-    getSetting?.bgImg?.length !== 0 &&
+    !!getSetting?.bgImg?.length === true &&
       pdf.addImage(
         getSetting?.bgImg,
-        "JPEG",
+        "png",
         centerImgX,
         centerImgY,
         imgWidth,
@@ -28,8 +30,8 @@ class pdfScript {
       );
 
     // Logo
-    getSetting?.logo.length !== 0 &&
-      pdf.addImage(getSetting?.logo, "JPEG", 15, 8, 0, 14);
+    !!getSetting?.logo?.length === true &&
+      pdf.addImage(getSetting?.logo, "png", 15, 8, 0, 14);
 
     pdf.setDrawColor(0);
     pdf.setFillColor(0, 0, 0);
@@ -51,7 +53,7 @@ class pdfScript {
       }
     );
     pdf.text(
-      `Payment status: ${templateData?.due > 0 ? "Due" : "Paid"}`,
+      `Payment status:: ${templateData?.due > 0 ? "Due" : "Paid"}`,
       pdf.internal.pageSize.width - 15,
       21,
       {
@@ -59,7 +61,7 @@ class pdfScript {
       }
     );
     pdf.text(
-      `Submit Date  ${templateData?.startDate?.slice(0, 10)}`,
+      `Submit Date:  ${templateData?.startDate?.slice(0, 10)}`,
       pdf.internal.pageSize.width - 15,
       27,
       {
@@ -67,17 +69,25 @@ class pdfScript {
       }
     );
     pdf.text(
-      `Delivery date  ${templateData?.deliveryDate?.slice(0, 10)}`,
+      `Delivery date:  ${templateData?.deliveryDate.slice(0, 10)}`,
       pdf.internal.pageSize.width - 15,
       33,
       {
         align: "right",
       }
     );
+    pdf.text(
+      `Writer:  ${templateData?.invoiceWriter}`,
+      pdf.internal.pageSize.width - 15,
+      39,
+      {
+        align: "right",
+      }
+    );
 
-    pdf.text(`${getSetting?.company_name}`, 15, 28);
+    pdf.text(`${getSetting?.company_name}`, 15, 29);
     pdf.setFontSize(10);
-    pdf.text(`${getSetting?.company_address}`, 15, 33);
+    pdf.text(`${getSetting?.company_address}`, 15, 34);
     pdf.text(
       `${getSetting?.email}, ${getSetting?.mobile}, ${getSetting?.website}`,
       15,
@@ -170,52 +180,52 @@ class pdfScript {
     });
     // Table payment calculation
 
-    let data = [
-      ["Subtotal", templateData?.subTotal],
-      ["Tax(15%)", templateData?.tax],
-      ["Shipping", templateData?.shipping],
-      ["Discount", templateData?.discount],
-      ["Total", templateData?.total],
-      ["Payment", templateData?.payment],
-      ["Due", templateData?.due],
-    ];
+    // let data = [
+    //   ["Subtotal", templateData?.subTotal],
+    //   ["Tax(15%)", templateData?.tax],
+    //   ["Shipping", templateData?.shipping],
+    //   ["Discount", templateData?.discount],
+    //   ["Total", templateData?.total],
+    //   ["Payment", templateData?.payment],
+    //   ["Due", templateData?.due],
+    // ];
 
-    // Filter out elements where the second element is 0
-    var filteredData = data.filter(function (item) {
-      return (
-        (item[1] !== null && item[0] === "Subtotal") ||
-        (item[1] !== 0 && item[0] === "Tax(15%)") ||
-        (item[1] !== null && item[0] === "Shipping") ||
-        (item[1] !== null && item[0] === "Discount") ||
-        (item[1] !== null && item[0] === "Total") ||
-        (item[1] !== null && item[0] === "Payment") ||
-        (item[1] !== null && item[0] === "Due")
-      );
-    });
+    // // Filter out elements where the second element is 0
+    // var filteredData = data.filter(function (item) {
+    //   return (
+    //     (item[1] !== null && item[0] === "Subtotal") ||
+    //     (item[1] !== 0 && item[0] === "Tax(15%)") ||
+    //     (item[1] !== null && item[0] === "Shipping") ||
+    //     (item[1] !== null && item[0] === "Discount") ||
+    //     (item[1] !== null && item[0] === "Total") ||
+    //     (item[1] !== null && item[0] === "Payment") ||
+    //     (item[1] !== null && item[0] === "Due")
+    //   );
+    // });
 
-    var styles = {
-      fontStyle: "bold",
-      fontSize: 10,
-      textColor: 0,
-      halign: "right",
-    };
+    // var styles = {
+    //   fontStyle: "bold",
+    //   fontSize: 10,
+    //   textColor: 0,
+    //   halign: "right",
+    // };
 
-    pdf.autoTable({
-      tableWidth: 60,
-      theme: "grid",
-      margin: { left: pdf.internal.pageSize.width - 74, bottom: 40 },
-      // head: [filteredData[0]],
-      body: filteredData.slice(0),
-      styles: styles,
-      headStyles: {
-        europe: { halign: "right" },
-        fillColor: [0, 0, 0],
-        textColor: [255, 255, 255],
-      },
-      columnStyles: {
-        0: { fontStyle: "normal" },
-      },
-    });
+    // pdf.autoTable({
+    //   tableWidth: 60,
+    //   theme: "grid",
+    //   margin: { left: pdf.internal.pageSize.width - 74, bottom: 40 },
+    //   // head: [filteredData[0]],
+    //   body: filteredData.slice(0),
+    //   styles: styles,
+    //   headStyles: {
+    //     europe: { halign: "right" },
+    //     fillColor: [0, 0, 0],
+    //     textColor: [255, 255, 255],
+    //   },
+    //   columnStyles: {
+    //     0: { fontStyle: "normal" },
+    //   },
+    // });
 
     // Footer
     pdf.setTextColor(0, 0, 0);

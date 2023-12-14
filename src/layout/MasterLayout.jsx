@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const MasterLayout = (props) => {
   return (
@@ -9,9 +9,12 @@ const MasterLayout = (props) => {
           <div className="container mx-auto">
             {/* Header sectoion */}
             <header className="flex justify-between">
-              <div className="logo">
-                <img src="assets/img/logo-dark.png" alt="" />
-              </div>
+              <Link to="/">
+                <div className="logo w-[200px]">
+                  <img src="assets/img/logo-dark.png" alt="" />
+                </div>
+              </Link>
+
               <nav className="flex items-center">
                 <ul className="flex gap-10">
                   <li>

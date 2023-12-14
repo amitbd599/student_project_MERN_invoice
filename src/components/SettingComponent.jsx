@@ -2,7 +2,13 @@ import { useRef, useState } from "react";
 import { Select, Option } from "@material-tailwind/react";
 import { currencyData } from "../script/currency.js";
 import { page_size } from "../script/page_size";
-import { SuccessToast, fixNumber, getBase64, toNumber } from "../helper/helper";
+import {
+  ErrorToast,
+  SuccessToast,
+  fixNumber,
+  getBase64,
+  toNumber,
+} from "../helper/helper";
 import { FaXmark } from "react-icons/fa6";
 const SettingComponent = () => {
   let getSetting = JSON.parse(localStorage.getItem("setting"));
@@ -18,14 +24,28 @@ const SettingComponent = () => {
   );
 
   const logoHandel = (event) => {
-    getBase64(event.target.files[0]).then((base64Img) => {
-      setLogo(base64Img);
-    });
+    const file = event.target.files[0];
+    if (file && file.type === "image/png") {
+      getBase64(event.target.files[0]).then((base64Img) => {
+        setLogo(base64Img);
+      });
+    } else {
+      ErrorToast("Please select a valid PNG file.");
+      // Clear the file input
+      event.target.value = null;
+    }
   };
   const bgHandel = (event) => {
-    getBase64(event.target.files[0]).then((base64Img) => {
-      setBgImg(base64Img);
-    });
+    const file = event.target.files[0];
+    if (file && file.type === "image/png") {
+      getBase64(event.target.files[0]).then((base64Img) => {
+        setBgImg(base64Img);
+      });
+    } else {
+      ErrorToast("Please select a valid PNG file.");
+      // Clear the file input
+      event.target.value = null;
+    }
   };
 
   let company_nameRef,
