@@ -180,52 +180,52 @@ class pdfScript {
     });
     // Table payment calculation
 
-    // let data = [
-    //   ["Subtotal", templateData?.subTotal],
-    //   ["Tax(15%)", templateData?.tax],
-    //   ["Shipping", templateData?.shipping],
-    //   ["Discount", templateData?.discount],
-    //   ["Total", templateData?.total],
-    //   ["Payment", templateData?.payment],
-    //   ["Due", templateData?.due],
-    // ];
+    let data = [
+      ["Subtotal", templateData?.subTotal],
+      ["Tax(15%)", templateData?.tax],
+      ["Shipping", templateData?.shipping],
+      ["Discount", templateData?.discount],
+      ["Total", templateData?.total],
+      ["Payment", templateData?.payment],
+      ["Due", templateData?.due],
+    ];
 
-    // // Filter out elements where the second element is 0
-    // var filteredData = data.filter(function (item) {
-    //   return (
-    //     (item[1] !== null && item[0] === "Subtotal") ||
-    //     (item[1] !== 0 && item[0] === "Tax(15%)") ||
-    //     (item[1] !== null && item[0] === "Shipping") ||
-    //     (item[1] !== null && item[0] === "Discount") ||
-    //     (item[1] !== null && item[0] === "Total") ||
-    //     (item[1] !== null && item[0] === "Payment") ||
-    //     (item[1] !== null && item[0] === "Due")
-    //   );
-    // });
+    // Filter out elements where the second element is 0
+    var filteredData = data.filter(function (item) {
+      return (
+        (item[1] !== null && item[0] === "Subtotal") ||
+        (item[1] !== 0 && item[0] === "Tax(15%)") ||
+        (item[1] !== null && item[0] === "Shipping") ||
+        (item[1] !== null && item[0] === "Discount") ||
+        (item[1] !== null && item[0] === "Total") ||
+        (item[1] !== null && item[0] === "Payment") ||
+        (item[1] !== null && item[0] === "Due")
+      );
+    });
 
-    // var styles = {
-    //   fontStyle: "bold",
-    //   fontSize: 10,
-    //   textColor: 0,
-    //   halign: "right",
-    // };
+    var styles = {
+      fontStyle: "bold",
+      fontSize: 10,
+      textColor: 0,
+      halign: "right",
+    };
 
-    // pdf.autoTable({
-    //   tableWidth: 60,
-    //   theme: "grid",
-    //   margin: { left: pdf.internal.pageSize.width - 74, bottom: 40 },
-    //   // head: [filteredData[0]],
-    //   body: filteredData.slice(0),
-    //   styles: styles,
-    //   headStyles: {
-    //     europe: { halign: "right" },
-    //     fillColor: [0, 0, 0],
-    //     textColor: [255, 255, 255],
-    //   },
-    //   columnStyles: {
-    //     0: { fontStyle: "normal" },
-    //   },
-    // });
+    pdf.autoTable({
+      tableWidth: 60,
+      theme: "grid",
+      margin: { left: pdf.internal.pageSize.width - 74, bottom: 40 },
+      // head: [filteredData[0]],
+      body: filteredData.slice(0),
+      styles: styles,
+      headStyles: {
+        europe: { halign: "right" },
+        fillColor: [0, 0, 0],
+        textColor: [255, 255, 255],
+      },
+      columnStyles: {
+        0: { fontStyle: "normal" },
+      },
+    });
 
     // Footer
     pdf.setTextColor(0, 0, 0);

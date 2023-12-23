@@ -13,7 +13,7 @@ const InitLoadData = () => {
       email: "paytalk@armyspy.com",
       fax: "(123)-456-7890",
       footerText:
-        "Paytalk.com is a vibrant and succinct 2-syllable domain name. This is a desirable character length, as it’s easy to remember and is more likely to rapidly become a household name. Furthermore, the 7 characters make it a memorable, punchy choice in the world of domain names.",
+        "Paytalk.com is a vibrant and succinct 2-syllable domain name. This is a desirable character length, as it’s easy to remember and is more likely to rapidly become a household name. Furthermore, the 7 characters make it a memorable.",
       invoiceType: "random",
       invoiceWriter: "Gladys D. Watson",
       logo: "",
